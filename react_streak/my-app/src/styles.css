@@ -1,0 +1,567 @@
+:root {
+  --bg: #0f1115;
+  --panel: #151822;
+  --muted: #aab2c0;
+  --text: #eef2f8;
+  --accent: #7c9cff;
+  --accent-2: #4ade80;
+  --danger: #ff6b6b;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial;
+}
+
+/* Header */
+.app-header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 17, 21, 0.95),
+    rgba(15, 17, 21, 0.75)
+  );
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 10;
+}
+.app-title {
+  margin: 0;
+  font-size: clamp(18px, 2vw, 24px);
+  letter-spacing: 0.3px;
+}
+
+/* Overall streak pill with flame + number */
+.overall-icon {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: default;
+  box-shadow: var(--shadow);
+  z-index: 30;
+}
+.flame path {
+  fill: none;
+  stroke: #a0a7b8;
+  stroke-width: 1.8;
+}
+.overall-icon.active .flame path {
+  stroke: none;
+  fill: #ff8a00;
+  filter: drop-shadow(0 0 6px rgba(255, 138, 0, 0.55));
+}
+.count-inline {
+  font-weight: 700;
+  font-size: 14px;
+  color: #a0a7b8;
+}
+/* Per-list streak (mini flame + number) */
+.list-streak-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+.list-streak-icon .flame path {
+  fill: none;
+  stroke: #a0a7b8;
+  stroke-width: 1.5;
+}
+.list-streak-icon.active .flame path {
+  stroke: none;
+  fill: #ff8a00;
+  filter: drop-shadow(0 0 4px rgba(255, 138, 0, 0.45));
+}
+.list-streak-icon .count-inline {
+  font-size: 12px;
+  font-weight: 700;
+  color: #a0a7b8;
+}
+.list-streak-icon.active .count-inline {
+  color: #ff8a00;
+}
+
+.overall-icon.active .count-inline {
+  color: #ff8a00;
+}
+
+/* Layout */
+.container {
+  max-width: 1100px;
+  margin: 20px auto 120px;
+  padding: 0 16px;
+}
+.lists {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Card */
+.list-card {
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.list-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.list-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* Per-list streak badge */
+.streak-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Kebab menu */
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kebab-btn {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.kebab-btn:hover {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+.kebab-dots {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  position: relative;
+}
+.kebab-dots::before,
+.kebab-dots::after,
+.kebab-dots span {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translateY(-50%);
+}
+.kebab-dots::before {
+  left: 0;
+}
+.kebab-dots span {
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.kebab-dots::after {
+  right: 0;
+}
+.card-menu {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  min-width: 150px;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 6px;
+  display: none;
+  z-index: 20;
+}
+.card-menu.open {
+  display: block;
+}
+.card-menu button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  border: none;
+  cursor: pointer;
+}
+.card-menu button:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.card-menu .danger {
+  color: var(--danger);
+}
+
+/* Tasks */
+.tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+}
+.task input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+.task.done .label {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+/* Inputs/buttons */
+.row {
+  display: flex;
+  gap: 8px;
+}
+.input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  outline: none;
+}
+.input::placeholder {
+  color: #8c93a3;
+}
+.btn {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+}
+.btn:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+.btn.primary {
+  background: linear-gradient(
+    180deg,
+    rgba(124, 156, 255, 0.25),
+    rgba(124, 156, 255, 0.15)
+  );
+  border-color: rgba(124, 156, 255, 0.5);
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 24px 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+}
+
+/* Floating add button */
+.fab {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 28px;
+  line-height: 56px;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    rgba(124, 156, 255, 0.9),
+    rgba(124, 156, 255, 0.7)
+  );
+  color: #0b0e15;
+  box-shadow: 0 15px 30px rgba(124, 156, 255, 0.35),
+    0 6px 12px rgba(0, 0, 0, 0.25);
+}
+.fab:hover {
+  filter: brightness(1.05);
+}
+
+/* Dialog */
+dialog {
+  border: none;
+  border-radius: 20px;
+  padding: 0;
+  background: var(--panel);
+  color: var(--text);
+  width: min(92vw, 420px);
+  box-shadow: var(--shadow);
+}
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+#newListForm {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+/* Center <dialog> when opened without showModal() */
+dialog[open] {
+  position: fixed;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+}
+.lists {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #0d0d0d; /* match your theme */
+}
+
+/* right cluster */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* streak pill */
+.streak-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+/* profile cluster */
+.profile-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.logout-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+.profile-dropdown {
+  position: relative;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 110%; /* just below avatar */
+  right: 0;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 8px 0;
+  min-width: 120px;
+  z-index: 100;
+}
+
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+/* header streak badge */
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* default (not completed today): no glow */
+.streak-badge .flame {
+  opacity: 0.6;
+  animation: none;
+  filter: none;
+}
+
+.streak-badge .count-inline {
+  opacity: 0.75;
+}
+
+/* glow only when all lists are completed today */
+.streak-badge.active .flame {
+  opacity: 1;
+  filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.55));
+  animation: flamePulse 1.3s ease-in-out infinite;
+}
+
+.streak-badge.active .count-inline {
+  opacity: 1;
+}
+
+@keyframes flamePulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-1px) scale(1.05);
+  }
+}
+/* header streak badge */
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* default (not completed today): no glow */
+.streak-badge .flame {
+  opacity: 0.6;
+  animation: none;
+  filter: none;
+}
+
+.streak-badge .count-inline {
+  opacity: 0.75;
+}
+
+/* glow only when all lists are completed today */
+.streak-badge.active .flame {
+  opacity: 1;
+  filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.55));
+  animation: flamePulse 1.3s ease-in-out infinite;
+}
+
+.streak-badge.active .count-inline {
+  opacity: 1;
+}
+
+@keyframes flamePulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-1px) scale(1.05);
+  }
+}
+.streak-chip {
+  box-shadow: none; /* base */
+}
+.streak-chip.active {
+  box-shadow: 0 0 12px rgba(255, 145, 0, 0.35), 0 0 24px rgba(255, 145, 0, 0.18);
+}
+/* default color when NOT all lists are done today */
+.streak-chip {
+  color: #95a1ab; /* grey */
+  transition: color 0.2s ease;
+}
+
+/* when ALL lists are done today */
+.streak-chip.active {
+  color: #ff9f1a; /* orange */
+}
+
+/* make both the number and the SVG flame use the same color */
+.streak-chip .count {
+  color: currentColor;
+}
+.streak-chip .flame path {
+  fill: currentColor;
+}
